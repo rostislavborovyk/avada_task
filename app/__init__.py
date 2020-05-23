@@ -1,33 +1,91 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-# from flask_bcrypt import Bcrypt
-# from flask_login import LoginManager
-# from flask_mail import Mail
-from app.config import Config
+# -*- encoding: utf-8 -*-
+"""
+License: MIT
+Copyright (c) 2019 - present AppSeed.us
+"""
 
+from flask import Flask, url_for
+from flask_login import LoginManager
+from flask_sqlalchemy import SQLAlchemy
+from importlib import import_module
+from logging import basicConfig, DEBUG, getLogger, StreamHandler
+from app.config import Config
+from os import path
 
 db = SQLAlchemy()
-# bcrypt = Bcrypt()
-# login_manager = LoginManager()
-# login_manager.login_view = 'users.login'
-# login_manager.login_message_category = 'info'
-# mail = Mail()
+login_manager = LoginManager()
 
 
-def create_app(config_class=Config):
-    app = Flask(__name__)
-    app.config.from_object(Config)
-
+def register_extensions(app):
     db.init_app(app)
-    # bcrypt.init_app(app)
-    # login_manager.init_app(app)
-    # mail.init_app(app)
+    login_manager.init_app(app)
 
-    from app.views import main
-    # from flaskblog.posts.routes import posts
-    # from flaskblog.main.routes import main
-    app.register_blueprint(main)
-    # app.register_blueprint(posts)
-    # app.register_blueprint(main)
 
+def register_admin_blueprints(app):
+    for module_name in ('base', 'home'):
+        module = import_module('app.{}.routes'.format(module_name))
+        app.register_blueprint(module.blueprint, url_prefix='/admin')
+
+
+def configure_database(app):
+    @app.before_first_request
+    def initialize_database():
+        db.create_all()
+
+    @app.teardown_request
+    def shutdown_session(exception=None):
+        db.session.remove()
+
+
+def configure_logs(app):
+    # soft logging
+    try:
+        basicConfig(filename='error.log', level=DEBUG)
+        logger = getLogger()
+        logger.addHandler(StreamHandler())
+    except:
+        pass
+
+
+def apply_themes(app):
+    """
+    Add support for themes.
+
+    If DEFAULT_THEME is set then all calls to
+      url_for('static', filename='')
+      will modfify the url to include the theme name
+
+    The theme parameter can be set directly in url_for as well:
+      ex. url_for('static', filename='', theme='')
+
+    If the file cannot be found in the /static/<theme>/ location then
+      the url will not be modified and the file is expected to be
+      in the default /static/ location
+    """
+
+    @app.context_processor
+    def override_url_for():
+        return dict(url_for=_generate_url_for_theme)
+
+    def _generate_url_for_theme(endpoint, **values):
+        if endpoint.endswith('static'):
+            themename = values.get('theme', None) or \
+                        app.config.get('DEFAULT_THEME', None)
+            if themename:
+                theme_file = "{}/{}".format(themename, values.get('filename', ''))
+                if path.isfile(path.join(app.static_folder, theme_file)):
+                    values['filename'] = theme_file
+        return url_for(endpoint, **values)
+
+
+def create_app(config_class=Config, selenium=False):
+    app = Flask(__name__, static_folder='base/static')
+    app.config.from_object(config_class)
+    if selenium:
+        app.config['LOGIN_DISABLED'] = True
+    register_extensions(app)
+    register_admin_blueprints(app)
+    configure_database(app)
+    configure_logs(app)
+    apply_themes(app)
     return app
