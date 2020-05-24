@@ -50,6 +50,8 @@ class Film(db.Model):
     genre = Column(String(60))
     budget = Column(String(60))
     time = Column(Integer)
+    description = Column(String(500))
+    yt_trailer_id = Column(String(11))
 
 
 @login_manager.user_loader

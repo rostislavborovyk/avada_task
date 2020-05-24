@@ -50,15 +50,15 @@
                             </div>
                             <p class="film-card-descr m-1">{{ film["name"] }}</p>
                             <div class="btn-container">
-                                <button type="button" class="btn btn-success m-1 ">Купить билет</button>
+                                <a href="{{ film["link"] }}">
+                                    <button type="button" class="btn btn-success m-1">Страница фильма</button>
+                                </a>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             {% endfor %}
         </div>
-
-
 
 
     </div>

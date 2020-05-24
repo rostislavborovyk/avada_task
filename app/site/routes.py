@@ -17,20 +17,20 @@ from jinja2 import TemplateNotFound
 def main_page():
     cards = [
         [
-            {"img": "card1.jpg", "name": "Ginger and rosa"},
-            {"img": "card2.jpg", "name": "Terminator"},
-            {"img": "card3.jpg", "name": "Assassin's creed"},
-            {"img": "card4.jpg", "name": "Monster hunter"},
+            {"img": "card1.jpg", "name": "Ginger and rosa", "link": "film/4"},
+            {"img": "card2.jpg", "name": "Terminator", "link": "film/3"},
+            {"img": "card3.jpg", "name": "Assassin's creed", "link": "film/5"},
+            {"img": "card4.jpg", "name": "Monster hunter", "link": "film/6"},
         ],
         [
-            {"img": "card1.jpg", "name": "Ginger and rosa"},
-            {"img": "card2.jpg", "name": "Terminator"},
-            {"img": "card3.jpg", "name": "Assassin's creed"},
-            {"img": "card4.jpg", "name": "Monster hunter"},
+            {"img": "card1.jpg", "name": "Ginger and rosa", "link": "film/4"},
+            {"img": "card2.jpg", "name": "Terminator", "link": "film/3"},
+            {"img": "card3.jpg", "name": "Assassin's creed", "link": "film/5"},
+            {"img": "card4.jpg", "name": "Monster hunter", "link": "film/6"},
         ],
         [
-            {"img": "card1.jpg", "name": "Ginger and rosa"},
-            {"img": "card2.jpg", "name": "Terminator"},
+            {"img": "card1.jpg", "name": "Ginger and rosa", "link": "film/4"},
+            {"img": "card2.jpg", "name": "Terminator", "link": "film/3"},
 
         ],
 
@@ -41,29 +41,41 @@ def main_page():
     return render_template("site/main_page.html", payload=payload)
 
 
-@site.route("/film/<film_name>", methods=["GET", "POST"])
-def film_page(film_name):
-    payload = {
-        "trailer_youtube_id": "6ZfuNTqbHE8",
-        "name": film_name,
-
-    }
+@site.route("/film/<int:film_id>", methods=["GET", "POST"])
+def film_page(film_id):
+    # film_descr = "Киноадаптация популярной игры Monster Hunter, первая часть которой дебютировала в 2004-м году. Помимо нашего мира существует ещё один: мир опасных и могущественных монстров, которые управляют своей реальностью со смертоносной свирепостью. Когда лейтенант Натали Артемис (Милла Йовович) вместе со своими верными солдатами телепортируется из нашего измерения во вселенную чудовищ, она сталкивается с шокирующей правдой. Вступив в войну с гигантскими и невероятно сильными врагами, Артемис решает объединиться с таинственным человеком – Охотником (Тони Джа), который нашёл способ дать отпор монстрам."
     # film = Film(
-    #     name="Терминатор",
+    #     name="Охотник на монстров",
     #     country="США",
-    #     composer="Тарантино",
-    #     producer="Тарантино",
-    #     director="Тарантино",
-    #     scenarist="Тарантино",
-    #     operator="Тарантино",
-    #     genre="боевик",
-    #     budget="7.00 млн USD",
-    #     time=135
+    #     composer="Пол У. С. Андерсон",
+    #     producer="Пол У. С. Андерсон",
+    #     director="Пол У. С. Андерсон",
+    #     scenarist="Пол У. С. Андерсон",
+    #     operator="Пол У. С. Андерсон",
+    #     genre="фентези",
+    #     budget="6.00 млн USD",
+    #     time=117,
+    #     description=film_descr,
+    #     yt_trailer_id="vwdcpWLUI1c"
     # )
     # db.session.add(film)
     # db.session.commit()
 
-    film = db.session.query(Film).filter(Film.id == 1).first()
+    film = db.session.query(Film).filter(Film.id == int(film_id)).first()
+    if film is None:
+        return "No such film"
+    payload = {
+        "name": film.name,
+        "composer": film.composer,
+        "producer": film.producer,
+        "director": film.director,
+        "scenarist": film.scenarist,
+        "operator": film.operator,
+        "genre": film.genre,
+        "budget": film.budget,
+        "time": film.time,
+        "description": film.description,
+        "yt_trailer_id": film.yt_trailer_id,
+    }
 
-    print(film)
     return render_template("site/film_page.html", payload=payload)
