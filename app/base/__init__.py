@@ -1,12 +1,11 @@
 # -*- encoding: utf-8 -*-
 """
-License: MIT
-Copyright (c) 2019 - present AppSeed.us
+This blueprint contains user reg and auth logic
 """
 
 from flask import Blueprint
 
-blueprint = Blueprint(
+base = Blueprint(
     'base_blueprint',
     __name__,
     url_prefix='',

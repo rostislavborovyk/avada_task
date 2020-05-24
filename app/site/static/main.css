@@ -1,0 +1,33 @@
+body {
+    background-image: url("img/bg_poster.jpg");
+}
+
+.block-margin {
+    margin: 2%;
+}
+
+.content-container {
+    background: #F8F9FA;
+}
+
+#carousel-descr {
+    text-align: center;
+    margin: 1%;
+}
+
+.film-card-descr {
+    text-align: center;
+    margin: 1%;
+}
+
+.btn-container {
+    text-align: center;
+}
+
+.my-footer {
+    margin-bottom: 5%;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
+}
