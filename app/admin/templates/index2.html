@@ -16,19 +16,26 @@
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form role="form" method="post" action="{{ url_for("admin_blueprint.banners") }}" enctype=multipart/form-data >
+
+
+            <form role="form" method="post" action="{{ url_for("admin_blueprint.banners") }}"
+                  enctype=multipart/form-data>
                 <div class="box-body">
                     {{ top_banner_form.csrf_token }}
                     <div class="form-group">
-{#                        <label for="exampleInputFile">File input</label>#}
+                        {#                        <label for="exampleInputFile">File input</label>#}
                         {{ top_banner_form.file.label(for="exampleInputFile") }}
-{#                        <input type="file" id="topBanner">#}
+                        {#                        <input type="file" id="topBanner">#}
                         {{ top_banner_form.file(type="file", id="topBanner") }}
 
                         <p class="help-block">Example block-level help text here.</p>
                     </div>
                 </div>
                 <!-- /.box-body -->
+            
+                {% with message = get_flashed_messages() %}
+                    <h1>{{ message[0] }}</h1>
+                {% endwith %}
 
                 <div class="box-footer">
                     <button type="submit" value="submit" class="btn btn-primary">Submit</button>
