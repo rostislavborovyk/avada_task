@@ -14,8 +14,8 @@ class User(db.Model, UserMixin):
     __tablename__ = 'User'
 
     id = Column(Integer, primary_key=True)
-    username = Column(String, unique=True)
-    email = Column(String, unique=True)
+    username = Column(String(60), unique=True)
+    email = Column(String(60), unique=True)
     password = Column(Binary)
     is_admin = Column(Boolean)
 
@@ -35,6 +35,21 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return str(self.username)
+
+
+class Film(db.Model):
+    __tablename__ = 'Film'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(60), unique=True)
+    country = Column(String(60))
+    composer = Column(String(60))
+    producer = Column(String(60))
+    director = Column(String(60))
+    scenarist = Column(String(60))
+    operator = Column(String(60))
+    genre = Column(String(60))
+    budget = Column(String(60))
+    time = Column(Integer)
 
 
 @login_manager.user_loader
