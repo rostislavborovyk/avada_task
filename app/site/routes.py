@@ -62,6 +62,9 @@ def film_page(film_id):
     # db.session.commit()
 
     film = db.session.query(Film).filter(Film.id == int(film_id)).first()
+    print("===============================================")
+    print(db.session.query(Film).first())
+    print("===============================================")
     if film is None:
         return "No such film"
     payload = {
